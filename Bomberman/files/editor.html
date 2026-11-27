@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor de Fases - Bomberman</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #171923; color: #fff; font-family: monospace;
+            display: flex; flex-wrap: wrap; gap: 24px; justify-content: center;
+            align-items: flex-start; padding: 24px;
+        }
+        h1 { color: #f5cb45; font-size: 20px; margin-bottom: 4px; }
+        .hint { color: #999; font-size: 12px; margin-bottom: 10px; line-height: 1.5; }
+        canvas {
+            max-width: 94vw; height: auto;
+            image-rendering: pixelated; border: 4px solid #777; cursor: crosshair;
+            display: block;
+        }
+        .panel { width: min(440px, 94vw); }
+        .row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; align-items: center; }
+        button {
+            background: #2a2f45; color: #fff; border: 2px solid #555;
+            padding: 8px 10px; font-family: monospace; font-size: 13px; cursor: pointer;
+        }
+        button:hover { border-color: #f5cb45; }
+        button.on { background: #f5cb45; color: #171923; border-color: #f5cb45; }
+        input[type=number], input[type=text] {
+            background: #0e1018; color: #f5cb45; border: 2px solid #555;
+            padding: 7px 6px; font-family: monospace; font-size: 13px;
+        }
+        input[type=number] { width: 58px; }
+        input[type=text] { width: 100%; }
+        .row label { font-size: 12px; color: #ccc; }
+        textarea {
+            width: 100%; height: 180px; background: #0e1018; color: #9fe38f;
+            border: 2px solid #555; padding: 8px; font-family: monospace; font-size: 12px;
+        }
+        .back { color: #f5cb45; font-size: 13px; display: inline-block; margin-bottom: 14px; text-decoration: none; }
+        .back:hover { text-decoration: underline; }
+        #status { color: #9fe38f; min-height: 18px; }
+        #list { list-style: none; margin-bottom: 10px; max-height: 230px; overflow-y: auto; }
+        #list li {
+            display: flex; gap: 6px; align-items: center; background: #0e1018;
+            border: 2px solid #333; padding: 6px; margin-bottom: 6px; font-size: 12px;
+        }
+        #list li.cur { border-color: #f5cb45; }
+        #list li span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        #list button { padding: 4px 8px; font-size: 11px; }
+        .section-title { color: #f5cb45; font-size: 12px; margin: 18px 0 8px; }
+        .catalog-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+        .catalog-tabs button { padding: 7px 4px; font-size: 11px; }
+        #catalog { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; max-height: 270px; overflow-y: auto; margin: 8px 0 12px; }
+        #catalog button { min-width: 0; min-height: 62px; padding: 5px 3px; font-size: 10px; line-height: 1.35; }
+        #catalog button.on { outline: 2px solid #fff; outline-offset: 1px; }
+        .swatch { display: block; width: 24px; height: 24px; margin: 0 auto 4px; border: 2px solid rgba(255,255,255,.55); image-rendering: pixelated; }
+        #theme { width: 100%; background: #0e1018; color: #f5cb45; border: 2px solid #555; padding: 7px; font: 13px monospace; }
+        .obstacle-option { display: flex; align-items: center; gap: 7px; color: #ccc; font-size: 12px; margin: 5px 0 12px; }
+        .obstacle-option[hidden] { display: none; }
+        @media (max-width: 700px) { body { padding: 12px; gap: 16px; } .panel { width: min(94vw, 520px); } }
+    </style>
+</head>
+<body>
+
+    <div>
+        <h1>Editor de Fases</h1>
+        <p class="hint">Clique e arraste para pintar. Botão direito remove o objeto ou obstáculo, preservando o terreno.</p>
+        <canvas id="ed"></canvas>
+    </div>
+
+    <div class="panel">
+        <a class="back" href="index.html" onclick="sessionStorage.removeItem('bomber_ed')">← Voltar ao menu</a>
+
+        <p class="hint">Nome do mapa:</p>
+        <div class="row"><input type="text" id="name" maxlength="20" placeholder="Ex.: Labirinto"></div>
+        <div class="row">
+            <button id="save">Salvar mapa</button>
+            <button id="new">Novo mapa</button>
+        </div>
+        <p id="status" class="hint"></p>
+
+        <p class="hint">Tamanho do mapa (em blocos, de 5 a 41):</p>
+        <div class="row">
+            <label>Colunas <input type="number" id="cols" min="5" max="41" value="13"></label>
+            <label>Linhas <input type="number" id="rows" min="5" max="41" value="11"></label>
+            <button id="size">Aplicar</button>
+        </div>
+
+        <p class="section-title">Mundo em destaque</p>
+        <div class="row"><select id="theme">
+            <option value="plains">Planícies Verdes</option>
+            <option value="frozen">Reino Congelado</option>
+            <option value="volcano">Vulcão</option>
+            <option value="factory">Fábrica Mecânica</option>
+            <option value="temple">Templo Antigo</option>
+        </select></div>
+        <p class="section-title">Categorias</p>
+        <div class="catalog-tabs" id="categories"></div>
+        <div id="catalog" aria-label="Elementos disponíveis"></div>
+        <label class="obstacle-option"><input id="deco-solid" type="checkbox"> Decoração selecionada bloqueia passagem</label>
+
+        <div class="row">
+            <button id="test">Testar fase</button>
+            <button id="clear">Limpar</button>
+        </div>
+
+        <p class="hint">Os mapas ficam no arquivo maps.js. Ao salvar, substitua esse arquivo na pasta sincronizada do OneDrive pelo arquivo baixado.</p>
+        <p class="hint">Mapas do jogo:</p>
+        <ul id="list"></ul>
+        <div class="row"><button id="defaults">Restaurar mapas padrão</button></div>
+
+        <p class="hint">Código do mapa em camadas (também aceita linhas de fases antigas):</p>
+        <textarea id="out" spellcheck="false"></textarea>
+        <div class="row" style="margin-top:8px">
+            <button id="copy">Copiar código</button>
+            <button id="load">Carregar do texto</button>
+        </div>
+    </div>
+
+    <script src="shared.js"></script>
+    <script src="levels.js"></script>
+    <script src="maps.js"></script>
+    <script src="editor.js"></script>
+</body>
+</html>

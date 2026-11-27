@@ -1,0 +1,163 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #171923;
+    color: white;
+    font-family: 'Press Start 2P', monospace;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    min-height: 100vh;
+}
+
+.game-container {
+    text-align: center;
+    width: min(94vw, 832px);
+}
+
+h1 {
+    color: #f5cb45;
+    margin-bottom: 16px;
+    font-size: clamp(16px, 4vw, 28px);
+    text-shadow: 3px 3px 0 #a33;
+}
+
+.hud {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: clamp(8px, 1.6vw, 11px);
+    color: #ccc;
+}
+
+.hud b {
+    color: #f5cb45;
+}
+
+.screen {
+    position: relative;
+    width: fit-content;
+    margin: 0 auto;
+    border: 4px solid #777;
+    line-height: 0;
+}
+
+canvas {
+    display: block;
+    height: auto;
+    image-rendering: pixelated;
+}
+
+#msg {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(10, 12, 20, 0.8);
+    color: #f5cb45;
+    font-size: clamp(14px, 3vw, 24px);
+    line-height: 1.6;
+    text-align: center;
+}
+
+#msg:empty {
+    display: none;
+}
+
+#msg small {
+    display: block;
+    margin-top: 16px;
+    font-size: 0.5em;
+    color: #fff;
+    line-height: 2;
+}
+
+.help {
+    margin-top: 14px;
+    font-size: clamp(7px, 1.4vw, 9px);
+    color: #999;
+    line-height: 1.8;
+}
+
+/* ---------- telas de menu e de seleção de mapas ---------- */
+[hidden] { display: none !important; }
+
+.view {
+    width: min(94vw, 520px);
+    margin: 0 auto;
+}
+
+h2 {
+    color: #fff;
+    font-size: clamp(12px, 2.5vw, 16px);
+    margin-bottom: 18px;
+}
+
+.menu {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 55vh;
+    overflow-y: auto;
+    padding: 4px;
+}
+
+.opt {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: #232840;
+    border: 3px solid #555;
+    color: #ccc;
+    cursor: pointer;
+    font-size: clamp(11px, 2.2vw, 15px);
+    text-align: left;
+}
+
+#s-menu .opt { justify-content: center; }
+
+.opt small { color: #888; font-size: 0.7em; }
+
+.opt.sel {
+    border-color: #f5cb45;
+    color: #f5cb45;
+    background: #2c2f4a;
+}
+
+.none { color: #999; font-size: 12px; padding: 12px; }
+
+#pw {
+    margin-top: 22px;
+    font-size: 10px;
+    color: #ccc;
+    line-height: 1.8;
+}
+
+#pw input {
+    margin-top: 10px;
+    width: 100%;
+    background: #0e1018;
+    color: #f5cb45;
+    border: 3px solid #f5cb45;
+    padding: 12px;
+    font-family: inherit;
+    font-size: 16px;
+    text-align: center;
+    letter-spacing: 6px;
+}
+
+#pwerr { color: #d9423a; margin-top: 10px; min-height: 14px; }
+
+.hud { margin-left: auto; margin-right: auto; }

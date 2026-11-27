@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bomberman Arcade</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main class="game-container">
+
+        <h1>BOMBERMAN ARCADE</h1>
+
+        <!-- 1) MENU INICIAL -->
+        <section id="s-menu" class="view">
+            <ul class="menu">
+                <li class="opt" data-act="start">START</li>
+                <li class="opt" data-act="editor">EDITOR DE MAPAS</li>
+                <li class="opt" data-act="exit">SAIR</li>
+            </ul>
+
+            <div id="pw" hidden>
+                DIGITE O CÓDIGO E TECLE ENTER
+                <input id="pwin" type="password" maxlength="12" autocomplete="off">
+                <div id="pwerr"></div>
+            </div>
+        </section>
+
+        <!-- 2) ESCOLHA DO MAPA -->
+        <section id="s-select" class="view" hidden>
+            <h2>ESCOLHA O MAPA</h2>
+            <ul class="menu" id="maps"></ul>
+            <p class="help">↑ ↓ ESCOLHER · ENTER OU ESPAÇO JOGAR · ESC VOLTAR</p>
+        </section>
+
+        <!-- 3) JOGO -->
+        <section id="s-game" hidden>
+            <div class="hud" id="hud">
+                <span>PONTOS <b id="score">0</b></span>
+                <span>RECORDE <b id="hi">0</b></span>
+                <span>MAPA <b id="level"></b></span>
+                <span>VIDAS <b id="lives">3</b></span>
+            </div>
+
+            <div class="screen">
+                <canvas id="game"></canvas>
+                <div id="msg"></div>
+            </div>
+
+            <p class="help">SETAS OU WASD: MOVER · ESPAÇO: BOMBA · ESC: SAIR</p>
+        </section>
+
+    </main>
+
+    <script src="shared.js"></script>
+    <script src="levels.js"></script>
+    <script src="maps.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
